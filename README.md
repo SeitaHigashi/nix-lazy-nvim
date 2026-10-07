@@ -83,6 +83,79 @@ Installs the wrapper into `home.packages`.
 
 `appName` is **not** exposed by the module (always the default `"nix-lazy-nvim"`).
 
+## Usage examples
+
+Add the input (use `inputs.nixpkgs.follows` as usual):
+
+```nix
+inputs.nix-lazy-nvim.url = "github:SeitaHigashi/nix-lazy-nvim";
+```
+
+### Standalone package (no module)
+
+```nix
+packages.x86_64-linux.default = nix-lazy-nvim.lib.mkNvim pkgs {
+  plugins = [ pkgs.vimPlugins.lazy-nvim pkgs.vimPlugins.telescope-nvim ];
+  configDir = ./config;       # your init.lua + lua/plugins
+  binName = "nvim-lazy";
+};
+```
+
+### NixOS module (system-wide)
+
+`lib.mkNvim` returns a package, so put it in `environment.systemPackages`:
+
+```nix
+{ pkgs, nix-lazy-nvim, ... }: {
+  environment.systemPackages = [
+    (nix-lazy-nvim.lib.mkNvim pkgs {
+      plugins = [ pkgs.vimPlugins.lazy-nvim pkgs.vimPlugins.telescope-nvim ];
+      extraPackages = [ pkgs.ripgrep ];
+      configDir = ./config;
+      binName = "nvim-lazy";
+    })
+  ];
+}
+```
+
+### home-manager (standalone)
+
+```nix
+homeConfigurations.me = home-manager.lib.homeManagerConfiguration {
+  inherit pkgs;
+  modules = [
+    nix-lazy-nvim.homeManagerModules.default
+    {
+      programs.nix-lazy-nvim = {
+        enable = true;
+        plugins = [ pkgs.vimPlugins.lazy-nvim pkgs.vimPlugins.telescope-nvim ];
+        configDir = ./config;
+        binName = "nvim-lazy";
+      };
+    }
+  ];
+};
+```
+
+### home-manager as a NixOS module
+
+```nix
+home-manager.users.alice = { ... }: {
+  imports = [ nix-lazy-nvim.homeManagerModules.default ];
+  programs.nix-lazy-nvim = {
+    enable = true;
+    plugins = [ pkgs.vimPlugins.lazy-nvim ];
+    binName = "nvim-lazy";
+  };
+};
+```
+
+Apply with your usual command (`nixos-rebuild switch --flake .#host` or `home-manager switch --flake .#me`).
+
+Checked: `examples/basic`'s `homeConfigurations.test` and a throwaway NixOS configuration containing
+both the `environment.systemPackages` form and the home-manager-as-NixOS-module form build
+(`nix build`; evaluated and built only, not activated or run).
+
 ## Usage notes
 
 - **Plugin names** come from `pname` and must match the last path segment lazy.nvim derives
@@ -112,7 +185,7 @@ Installs the wrapper into `home.packages`.
 
 On x86_64-linux, `examples/basic` builds (`nix build .#default`) and
 `nvim-lazy-test --headless` starts, loads the `nordfox` colorscheme and registers 8 plugins.
-The home-manager module (`homeConfigurations.test`) and the non-Nix fallback were not run for this README.
+The non-Nix fallback was not run for this README.
 
 ## License
 
