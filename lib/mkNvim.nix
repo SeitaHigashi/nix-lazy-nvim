@@ -9,7 +9,7 @@
 , extraPackages ? [ ]     # put on PATH for nvim (LSP servers, ripgrep, ...)
 , mergeDependencies ? [ "nvim-treesitter" ]  # plugins whose `dependencies` (grammars) join one dir
 , configDir ? null        # optional: run with this config dir (NVIM_APPNAME) instead of ~/.config/nvim
-, appName ? "nvim-lazy-nix"
+, appName ? "nix-lazy-nvim"
 , binName ? "nvim"
 }:
 let

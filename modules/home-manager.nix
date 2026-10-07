@@ -1,7 +1,7 @@
 self: { config, lib, pkgs, ... }:
-let cfg = config.programs.lazy-nix; in
+let cfg = config.programs.nix-lazy-nvim; in
 {
-  options.programs.lazy-nix = with lib; {
+  options.programs.nix-lazy-nvim = with lib; {
     enable = mkEnableOption "Neovim whose plugins are fetched by Nix and only loaded by lazy.nvim";
     package = mkOption { type = types.package; default = pkgs.neovim; description = "Neovim to wrap."; };
     plugins = mkOption { type = types.listOf types.raw; default = [ ]; description = "vimPlugins derivations, or { name; plugin; } to override the lazy.nvim name."; };
