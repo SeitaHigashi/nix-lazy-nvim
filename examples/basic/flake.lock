@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "flash-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787427371,
+        "narHash": "sha256-88DoXkz8M6ehkzS9VNu2/T0FENpduTbgiUZd+GeVVX4=",
+        "owner": "folke",
+        "repo": "flash.nvim",
+        "rev": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "flash.nvim",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -49,6 +65,7 @@
     },
     "root": {
       "inputs": {
+        "flash-src": "flash-src",
         "home-manager": "home-manager",
         "lazy-nix": "lazy-nix",
         "nixpkgs": "nixpkgs"

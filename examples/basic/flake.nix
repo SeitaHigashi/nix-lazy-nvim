@@ -2,10 +2,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     lazy-nix.url = "path:../..";
+    flash-src = { url = "github:folke/flash.nvim"; flake = false; };  # git-only plugin
     home-manager = { url = "github:nix-community/home-manager"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = { self, nixpkgs, lazy-nix, home-manager, ... }:
+  outputs = { self, nixpkgs, lazy-nix, home-manager, flash-src, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -16,6 +17,7 @@
       # 1) without home-manager
       packages.${system}.default = lazy-nix.lib.mkNvim pkgs {
         inherit plugins;
+        extraPlugins."flash.nvim" = flash-src;
         configDir = ./config;
         binName = "nvim-lazy-test";
       };
