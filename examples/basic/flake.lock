@@ -36,7 +36,7 @@
         "type": "github"
       }
     },
-    "lazy-nix": {
+    "nix-lazy-nvim": {
       "locked": {
         "path": "../..",
         "type": "path"
@@ -67,7 +67,7 @@
       "inputs": {
         "flash-src": "flash-src",
         "home-manager": "home-manager",
-        "lazy-nix": "lazy-nix",
+        "nix-lazy-nvim": "nix-lazy-nvim",
         "nixpkgs": "nixpkgs"
       }
     }
