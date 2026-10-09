@@ -96,6 +96,13 @@ Installs the wrapper into `home.packages`.
 | `enable` | `false` |
 | `package` | `pkgs.neovim` (passed as `neovim`) |
 | `plugins`, `extraPlugins`, `extraPackages`, `mergeDependencies`, `configDir`, `importSpecs`, `extraInitLuaPre`, `extraInitLua`, `lazyOpts`, `appName`, `binName` | same as above |
+| `linkConfig` | `false` |
+
+`linkConfig = true` symlinks the generated config (init.lua + `configDir`) to `~/.config/nvim`
+(`xdg.configFile."nvim"`) and drops the wrapper's `NVIM_APPNAME`/`XDG_CONFIG_HOME` isolation: nvim then
+uses the normal config and data/state dirs (`~/.local/share/nvim`, ...), and any `nvim` that reads
+`~/.config/nvim` gets the same config. Activation fails if `~/.config/nvim` already exists.
+(`lib.mkLazyNvim` equivalent: `isolateConfig = false` and link `<package>.configHome` yourself.)
 
 
 ## Usage examples

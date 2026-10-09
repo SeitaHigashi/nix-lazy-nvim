@@ -21,6 +21,7 @@
 , lazyOpts ? { }          # merged over the default lazy.setup() options
 , appName ? "nix-lazy-nvim"
 , binName ? "nvim"
+, isolateConfig ? true     # false: do not set NVIM_APPNAME/XDG_CONFIG_HOME; link `<pkg>.configHome` into ~/.config/nvim yourself
 }:
 let
   raw = expr: { _type = "lua-inline"; inherit expr; };
@@ -102,9 +103,11 @@ let
     ln -s ${initLua} $out/${appName}/init.lua
   '';
 in
-pkgs.writeShellScriptBin binName ''
-  export NVIM_APPNAME=${appName}
-  export XDG_CONFIG_HOME=${configRoot}
+(pkgs.writeShellScriptBin binName ''
+  ${lib.optionalString isolateConfig ''
+    export NVIM_APPNAME=${appName}
+    export XDG_CONFIG_HOME=${configRoot}
+  ''}
   ${lib.optionalString (extraPackages != [ ]) ''export PATH=${lib.makeBinPath extraPackages}:$PATH''}
   exec ${neovim}/bin/nvim "$@"
-''
+'').overrideAttrs (o: { passthru = (o.passthru or { }) // { configHome = "${configRoot}/${appName}"; }; })
