@@ -74,7 +74,8 @@ A plugin is a derivation, or an attrset `{ plugin = drv; ... }`:
 | `importSpecs` | `[ ]` | modules whose specs lazy.nvim imports |
 | `extraInitLuaPre`, `extraInitLua` | `""` | Lua before / after `lazy.setup` |
 | `lazyOpts` | `{ }` | merged over the default `lazy.setup()` options |
-| `appName` | `"nix-lazy-nvim"` | `NVIM_APPNAME`; the wrapper always runs nvim with its own config root (`XDG_CONFIG_HOME`), never `~/.config/nvim` |
+| `appName` | `"nix-lazy-nvim"` | `NVIM_APPNAME`; by default the wrapper runs nvim with its own config root (`XDG_CONFIG_HOME`), never `~/.config/nvim` (see `isolateConfig`) |
+| `isolateConfig` | `true` | `false`: no `NVIM_APPNAME`/`XDG_CONFIG_HOME`; link `<package>.configHome` into `~/.config/nvim` yourself (what the module's `linkConfig` does) |
 | `binName` | `"nvim"` | name of the executable |
 | `neovim` | `pkgs.neovim` | Neovim package to wrap |
 
@@ -174,9 +175,9 @@ home-manager.users.alice = { ... }: {
 
 Apply with your usual command (`nixos-rebuild switch --flake .#host` or `home-manager switch --flake .#me`).
 
-Checked: `examples/basic`'s `homeConfigurations.test` and a throwaway NixOS configuration containing
-both the `environment.systemPackages` form and the home-manager-as-NixOS-module form build
-(`nix build`; evaluated and built only, not activated or run).
+Checked with the current API: `examples/basic` (package and `homeConfigurations.test`, headless start, with
+and without `linkConfig`) and the `~/.dotfiles` NixOS toplevel (home-manager module with `linkConfig`).
+The standalone and `environment.systemPackages` snippets above were not rebuilt after the API change.
 
 ## Usage notes
 
@@ -189,7 +190,7 @@ both the `environment.systemPackages` form and the home-manager-as-NixOS-module 
   (e.g. `vimPlugins.nvim-treesitter.withAllGrammars`). `mergeDependencies` symlink-joins them
   into one directory so they sit on the runtimepath with the plugin.
 - **Wrapper vs `programs.neovim`**: the wrapper only writes a shell script and uses its own config
-  root, so it does not clash with a symlinked `~/.config/nvim`, and `binName` lets it live next to another `nvim`
+  root, so by default it does not clash with a symlinked `~/.config/nvim` (use `linkConfig` to link it deliberately), and `binName` lets it live next to another `nvim`
   without a command clash.
 
 ## Known limits
